@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tren Tonaj Çekerleri (No: 142–163)</title>
+  <style>
+    :root {
+      --bg:#0b1220;
+      --card:#0f1b33;
+      --text:#e7eefc;
+      --muted:#a9b7d6;
+      --accent:#4da3ff;
+      --border:rgba(255,255,255,.12);
+    }
+    body {
+      margin:0; font-family: -apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% -10%, rgba(77,163,255,.25), transparent 60%),
+                  radial-gradient(1000px 700px at 90% 10%, rgba(120,255,200,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header { padding: 18px 16px 10px; }
+    h1 { font-size: 18px; margin:0 0 6px; }
+    p  { margin:0; color:var(--muted); font-size: 13px; line-height: 1.35; }
+    .wrap { padding: 12px 16px 24px; max-width: 980px; margin: 0 auto; }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+      margin: 10px 0;
+    }
+    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+    label { display:block; font-size:12px; color:var(--muted); margin: 0 0 6px; }
+    select, button {
+      appearance:none;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.22);
+      color:var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+    select { min-width: 190px; }
+    button {
+      background: linear-gradient(180deg, rgba(77,163,255,.35), rgba(77,163,255,.15));
+      cursor:pointer;
+      border-color: rgba(77,163,255,.55);
+    }
+    button:active { transform: translateY(1px); }
+    .hint { font-size: 12px; color: var(--muted); margin-top: 10px; }
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:10px;
+      margin-top: 12px;
+    }
+    @media (min-width: 720px) {
+      .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    }
+    .stat {
+      border:1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 10px 9px;
+      background: rgba(0,0,0,.18);
+    }
+    .stat .k { font-size: 11px; color: var(--muted); }
+    .stat .v { font-size: 18px; margin-top: 4px; font-weight: 700; letter-spacing:.2px; }
+    .stat .u { font-size: 11px; color: var(--muted); margin-left: 4px; font-weight: 500; }
+    table {
+      width:100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      overflow:hidden;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.14);
+    }
+    th, td {
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      text-align:left;
+      font-size: 13px;
+    }
+    th { color: var(--muted); font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+    .badge {
+      display:inline-block; padding: 3px 8px; border: 1px solid rgba(77,163,255,.5);
+      border-radius: 999px; font-size: 12px; color: var(--text);
+      background: rgba(77,163,255,.12);
+    }
+    .footer { padding-top: 10px; color: var(--muted); font-size: 12px; }
+    .warn { color: #ffd18b; }
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <h1>Tren Tonaj Çekerleri (Sıra No 142–163)</h1>
+    <p>İstasyon çiftini seç → DE22000 / DE24000 / DE33000 değerlerini ve kanca çekerlerini (100/150/350 ton) gör.</p>
+  </header>
+
+  <main class="wrap">
+    <div class="card">
+      <div class="row">
+        <div>
+          <label for="from">A (Başlangıç)</label>
+          <select id="from"></select>
+        </div>
+        <div>
+          <label for="to">B (Bitiş)</label>
+          <select id="to"></select>
+        </div>
+        <div>
+          <button id="showBtn" type="button">Göster</button>
+        </div>
+      </div>
+      <div class="hint">Örnek: <span class="badge">Diyarbakır → Maden</span></div>
+    </div>
+
+    <div id="result" class="card" style="display:none;">
+      <div id="titleLine" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div style="font-weight:800;font-size:16px;">—</div>
+        <div class="badge" id="rowNo">—</div>
+      </div>
+
+      <div class="grid" id="stats"></div>
+
+      <table aria-label="Detay tablo">
+        <thead>
+          <tr>
+            <th>Lokomotif / Kanca</th>
+            <th>Çeker (ton)</th>
+          </tr>
+        </thead>
+        <tbody id="detailBody"></tbody>
+      </table>
+
+      <div class="footer">
+        <span class="warn">Not:</span> Bu sayfa yalnızca gönderdiğin tablo parçalarındaki (142–163) satırlardan oluşur.
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:800;margin-bottom:8px;">Kapsam</div>
+      <div class="footer">
+        Satırlar: 142–163 (Malatya/Fırat/Yolçatı/Uluova/Kürk/Maden/Şallar/Diyarbakır/Batman/Kurtalan/Karadağ/Bozdemir/Mazıdağı/Km.409+000)
+      </div>
+    </div>
+  </main>
+
+<script>
+const DATA = [{"no": 142, "A": "Malatya", "B": "Fırat", "DE22000": 2000, "DE24000": 2000, "DE33000": 2500, "DE36000": 2500, "HB83000D": 2500, "100TON": 2010, "150TON": 3000, "350TON": 4000}, {"no": 143, "A": "Fırat", "B": "KM.332+850", "DE22000": 875, "DE24000": 750, "DE33000": 1310, "DE36000": 1410, "HB83000D": 1540, "100TON": 1350, "150TON": 2140, "350TON": 4000}, {"no": 144, "A": "KM.332+850", "B": "Yolçatı", "DE22000": 2000, "DE24000": 2000, "DE33000": 2500, "DE36000": 2500, "HB83000D": 2500, "100TON": 2500, "150TON": 3000, "350TON": 4000}, {"no": 145, "A": "Yolçatı", "B": "KM.332+850", "DE22000": 825, "DE24000": 715, "DE33000": 1280, "DE36000": 1510, "HB83000D": 1640, "100TON": 1460, "150TON": 2320, "350TON": 4000}, {"no": 146, "A": "KM.332+850", "B": "Fırat", "DE22000": 2000, "DE24000": 2000, "DE33000": 2500, "DE36000": 2500, "HB83000D": 2500, "100TON": 1860, "150TON": 2950, "350TON": 4000}, {"no": 147, "A": "Fırat", "B": "Malatya", "DE22000": 1000, "DE24000": 845, "DE33000": 1500, "DE36000": 1720, "HB83000D": 1840, "100TON": 1650, "150TON": 2620, "350TON": 4000}, {"no": 148, "A": "Yolçatı", "B": "Uluova", "DE22000": 1100, "DE24000": 930, "DE33000": 1650, "DE36000": 1990, "HB83000D": 2080, "100TON": 1760, "150TON": 2800, "350TON": 4000}, {"no": 149, "A": "Uluova", "B": "Kürk", "DE22000": 600, "DE24000": 500, "DE33000": 800, "DE36000": 1080, "HB83000D": 1220, "100TON": 1150, "150TON": 1830, "350TON": 4000}, {"no": 150, "A": "Kürk", "B": "Maden", "DE22000": 1120, "DE24000": 960, "DE33000": 1700, "DE36000": 2500, "HB83000D": 2500, "100TON": 1680, "150TON": 2680, "350TON": 4000}, {"no": 151, "A": "Maden", "B": "Şallar", "DE22000": 800, "DE24000": 685, "DE33000": 1100, "DE36000": 1550, "HB83000D": 1670, "100TON": 1480, "150TON": 2350, "350TON": 4000}, {"no": 152, "A": "Şallar", "B": "Diyarbakır", "DE22000": 1300, "DE24000": 1065, "DE33000": 1850, "DE36000": 2320, "HB83000D": 2370, "100TON": 1670, "150TON": 2660, "350TON": 4000}, {"no": 153, "A": "Diyarbakır", "B": "Batman", "DE22000": 1700, "DE24000": 1355, "DE33000": 2340, "DE36000": 2500, "HB83000D": 2500, "100TON": 1670, "150TON": 2650, "350TON": 4000}, {"no": 154, "A": "Batman", "B": "Kurtalan", "DE22000": 1100, "DE24000": 930, "DE33000": 1600, "DE36000": 1880, "HB83000D": 1980, "100TON": 1720, "150TON": 2730, "350TON": 4000}, {"no": 155, "A": "Kurtalan", "B": "Karadağ", "DE22000": 1100, "DE24000": 930, "DE33000": 1500, "DE36000": 1820, "HB83000D": 1930, "100TON": 1700, "150TON": 2700, "350TON": 4000}, {"no": 156, "A": "Karadağ", "B": "Batman", "DE22000": 2000, "DE24000": 2000, "DE33000": 2500, "DE36000": 2500, "HB83000D": 2500, "100TON": 2500, "150TON": 3000, "350TON": 4000}, {"no": 157, "A": "Batman", "B": "Bozdemir", "DE22000": 1700, "DE24000": 1355, "DE33000": 2340, "DE36000": 2500, "HB83000D": 2500, "100TON": 1670, "150TON": 2660, "350TON": 4000}, {"no": 158, "A": "Bozdemir", "B": "Diyarbakır", "DE22000": 1100, "DE24000": 930, "DE33000": 1650, "DE36000": 1880, "HB83000D": 1980, "100TON": 1730, "150TON": 2750, "350TON": 4000}, {"no": 159, "A": "Diyarbakır", "B": "Mazıdağı", "DE22000": 1120, "DE24000": 870, "DE33000": 1370, "DE36000": 1850, "HB83000D": 1960, "100TON": 1650, "150TON": 2620, "350TON": 4000}, {"no": 160, "A": "Mazıdağı", "B": "Diyarbakır", "DE22000": 1070, "DE24000": 830, "DE33000": 1290, "DE36000": 1750, "HB83000D": 1870, "100TON": 1640, "150TON": 2610, "350TON": 4000}, {"no": 161, "A": "Diyarbakır", "B": "Maden", "DE22000": 850, "DE24000": 715, "DE33000": 1280, "DE36000": 1570, "HB83000D": 1700, "100TON": 1460, "150TON": 2320, "350TON": 4000}, {"no": 162, "A": "Maden", "B": "Km.409+000", "DE22000": 600, "DE24000": 500, "DE33000": 910, "DE36000": 1120, "HB83000D": 1260, "100TON": 1160, "150TON": 1840, "350TON": 4000}, {"no": 163, "A": "Km.409+000", "B": "Yolçatı", "DE22000": 950, "DE24000": 820, "DE33000": 1450, "DE36000": 1480, "HB83000D": 1610, "100TON": 1480, "150TON": 2360, "350TON": 4000}];
+
+function uniq(arr) {
+  return [...new Set(arr)].sort((a,b)=>a.localeCompare(b,'tr'));
+}
+
+const fromSel = document.getElementById('from');
+const toSel   = document.getElementById('to');
+const showBtn = document.getElementById('showBtn');
+
+function fillFrom() {
+  const froms = uniq(DATA.map(r => r.A));
+  fromSel.innerHTML = froms.map(v => `<option value="${v}">${v}</option>`).join('');
+}
+
+function fillTo(fromVal) {
+  const tos = uniq(DATA.filter(r => r.A === fromVal).map(r => r.B));
+  toSel.innerHTML = tos.map(v => `<option value="${v}">${v}</option>`).join('');
+}
+
+function findRow(a,b) {
+  return DATA.find(r => r.A === a && r.B === b);
+}
+
+function tonVal(v) {
+  if (v === null || v === undefined || v === "" ) return "—";
+  return String(v);
+}
+
+function render(row) {
+  const box = document.getElementById('result');
+  const titleLine = document.getElementById('titleLine').firstElementChild;
+  const rowNo = document.getElementById('rowNo');
+  const stats = document.getElementById('stats');
+  const detailBody = document.getElementById('detailBody');
+
+  if (!row) {
+    box.style.display = 'block';
+    titleLine.textContent = `${fromSel.value} → ${toSel.value}`;
+    rowNo.textContent = "Kayıt yok";
+    stats.innerHTML = "";
+    detailBody.innerHTML = `<tr><td colspan="2">Bu istasyon çifti için (142–163) aralığında kayıt bulunamadı.</td></tr>`;
+    return;
+  }
+
+  box.style.display = 'block';
+  titleLine.textContent = `${row.A} → ${row.B}`;
+  rowNo.textContent = `Sıra No: ${row.no}`;
+
+  const cards = [
+    ["DE22000", row.DE22000],
+    ["DE24000", row.DE24000],
+    ["DE33000", row.DE33000],
+    ["100 TON", row["100TON"]],
+    ["150 TON", row["150TON"]],
+    ["350 TON", row["350TON"]],
+  ];
+
+  stats.innerHTML = cards.map(([k,v]) => `
+    <div class="stat">
+      <div class="k">${k}</div>
+      <div class="v">${tonVal(v)}<span class="u"> ton</span></div>
+    </div>
+  `).join('');
+
+  const details = [
+    ["DE 22000", row.DE22000],
+    ["DE 24000", row.DE24000],
+    ["DE 33000", row.DE33000],
+    ["DE 36000 (tablodan)", row.DE36000],
+    ["HB 83000 Dizel (tablodan)", row.HB83000D],
+    ["Kanca 100 TON", row["100TON"]],
+    ["Kanca 150 TON", row["150TON"]],
+    ["Kanca 350 TON", row["350TON"]],
+  ];
+
+  detailBody.innerHTML = details.map(([k,v]) => `
+    <tr>
+      <td>${k}</td>
+      <td><strong>${tonVal(v)}</strong> ton</td>
+    </tr>
+  `).join('');
+}
+
+fromSel.addEventListener('change', () => {
+  fillTo(fromSel.value);
+});
+
+showBtn.addEventListener('click', () => {
+  render(findRow(fromSel.value, toSel.value));
+});
+
+// ilk yükleme
+fillFrom();
+// Varsayılan örnek: Diyarbakır → Maden (varsa)
+fromSel.value = "Diyarbakır";
+fillTo(fromSel.value);
+toSel.value = "Maden";
+render(findRow(fromSel.value, toSel.value));
+</script>
+</body>
+</html>
