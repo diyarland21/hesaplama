@@ -1,0 +1,240 @@
+﻿<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TCDD Taşımacılık A.Ş. – Süre / Varış Hesap</title>
+<style>
+:root{
+  --bg1:#0b1b3a; --bg2:#143b7a; --card:#0f172aee; --card2:#111c33ee;
+  --text:#eaf0ff; --muted:#b7c4ff; --accent:#34d399; --accent2:#60a5fa;
+  --warn:#fbbf24; --danger:#fb7185; --shadow: 0 14px 40px rgba(0,0,0,.35);
+  --radius: 18px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; color:var(--text);
+  font-family: Segoe UI, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 20% 10%, rgba(96,165,250,.35), transparent 55%),
+    radial-gradient(900px 500px at 85% 20%, rgba(52,211,153,.28), transparent 55%),
+    linear-gradient(160deg, var(--bg1), var(--bg2));
+  display:flex; justify-content:center; padding:22px 14px;
+}
+.wrap{width:min(760px, 100%);}
+.header{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px 16px; border-radius: var(--radius);
+  background: rgba(255,255,255,.08);
+  box-shadow: var(--shadow); backdrop-filter: blur(8px);
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.logo{
+  width:44px;height:44px; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(96,165,250,.95), rgba(52,211,153,.95));
+  box-shadow: 0 10px 25px rgba(0,0,0,.25);
+  display:grid; place-items:center; font-weight:900; letter-spacing:.5px;
+}
+.brand h1{font-size:16px; margin:0; line-height:1.15;}
+.brand small{color: var(--muted); display:block; margin-top:3px; font-size:12px;}
+.pill{font-size:12px; color:#0b1b3a; background: rgba(234,240,255,.9);
+  padding:8px 10px; border-radius:999px; font-weight:800;}
+.card{
+  margin-top:14px; border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--card), var(--card2));
+  box-shadow: var(--shadow); padding:16px;
+  border: 1px solid rgba(255,255,255,.10);
+}
+.grid{display:grid; grid-template-columns: 1fr 1fr; gap:12px;}
+@media (max-width: 620px){ .grid{grid-template-columns:1fr;} }
+.field label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px 2px;}
+.input{
+  width:100%; padding:12px; border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.07);
+  color:var(--text); font-size:15px; outline:none;
+}
+.input:focus{border-color: rgba(96,165,250,.7); box-shadow:0 0 0 4px rgba(96,165,250,.18);}
+.actions{display:grid; grid-template-columns: 1fr auto; gap:10px; margin-top:12px;}
+@media (max-width: 620px){ .actions{grid-template-columns:1fr;} }
+.btn{
+  border:0; cursor:pointer; font-weight:900; letter-spacing:.2px;
+  padding:12px 14px; border-radius:14px; color:#071427;
+  background: linear-gradient(135deg, rgba(52,211,153,.95), rgba(96,165,250,.95));
+  box-shadow:0 10px 25px rgba(0,0,0,.25); font-size:15px;
+}
+.btn:active{transform: translateY(1px);}
+.btn2{
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.08);
+  color:var(--text); font-weight:900;
+  padding:12px 14px; border-radius:14px; cursor:pointer;
+}
+.note{margin-top:10px; color: rgba(234,240,255,.85); font-size:12px; line-height:1.45;}
+.result{
+  margin-top:14px; border-radius: var(--radius);
+  background: rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  padding:14px;
+}
+.kpis{display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;}
+@media (max-width: 620px){ .kpis{grid-template-columns:1fr;} }
+.kpi{
+  border-radius:16px; padding:12px;
+  background: rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.10);
+}
+.kpi .t{font-size:12px;color:var(--muted);margin-bottom:6px}
+.kpi .v{font-size:18px;font-weight:900}
+.kpi.accent .v{color: var(--accent)}
+.kpi.blue .v{color: var(--accent2)}
+.kpi.warn .v{color: var(--warn)}
+.kpi.pink .v{color: var(--danger)}
+.footer{text-align:center; margin-top:12px; color: rgba(234,240,255,.65); font-size:11px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="brand">
+      <div class="logo">T</div>
+      <div>
+        <h1>TCDD Taşımacılık A.Ş.</h1>
+        <small>Süre + Varış Saati (TABİ / ASGARİ + duruş)</small>
+      </div>
+    </div>
+    <div class="pill">Offline</div>
+  </div>
+
+  <div class="card">
+    <div class="grid">
+      <div class="field">
+        <label>Başlangıç istasyonu</label>
+        <input class="input" id="start" list="stations" placeholder="Örn: kurşunlu" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Bitiş istasyonu</label>
+        <input class="input" id="end" list="stations" placeholder="Örn: diyarbakır" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Çıkış saati (HH:MM)</label>
+        <input class="input" id="dep" type="time" value="00:00">
+      </div>
+      <div class="field">
+        <label>Not</label>
+        <input class="input" value="Varış = çıkış + toplam süre" disabled>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="btn">Hesapla</button>
+      <button class="btn2" id="swap">⇄ Değiştir</button>
+    </div>
+
+    <div class="note">
+      Kural: <b>Başlangıç</b> ve <b>varış</b> duruşları hariç; <b>ara duruşlar dahil</b>.
+      Büyük/küçük harf duyarsızdır (Türkçe İ/ı uyumlu).
+    </div>
+
+    <datalist id="stations"></datalist>
+
+    <div class="result">
+      <div id="routeLine" style="font-weight:900; font-size:16px;">İstasyon seçip “Hesapla”ya bas.</div>
+      <div class="kpis">
+        <div class="kpi accent"><div class="t">TABİ seyir</div><div class="v" id="tabiSeyir">—</div></div>
+        <div class="kpi blue"><div class="t">ASGARİ seyir</div><div class="v" id="asgSeyir">—</div></div>
+        <div class="kpi warn"><div class="t">Ara duruş</div><div class="v" id="araDurus">—</div></div>
+        <div class="kpi pink"><div class="t">Varış (TABİ / ASGARİ)</div><div class="v" id="arrivals">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Tek dosya – internet gerekmez.</div>
+</div>
+
+<script>
+const DATA = [["Kurşunlu",0,0,0],["Sumucak",10,9,0],["Göllüce",22,12,15],["Km 142+500",10,6,0],["Ildızım",12,12,0],["Gümüşdöven",17,16,0],["Çankırı",15,14,16],["Germece",20,19,0],["Tüney",28,25,0],["Km 54+000",14,6,0],["Dümbelek",3,3,0],["Alibey",13,13,0],["Kalecik",19,18,0],["Km 0+600",19,17,0],["Irmak",2,1,30],["Irmak Kuşak Noktası",7,6,0],["Km 69+854 Irmak",7,6,0],["Yahşihan",19,18,16],["Kırıkkale",8,6,0],["Mahmutlar",13,10,0],["Km 112+001 YHT",18,11,0],["Balışıh",4,3,24],["İzzettin",19,12,0],["Yağlı",12,11,0],["Çerikli",12,11,59],["Yeniyapan",16,14,0],["Sekili",18,16,16],["Tatbekirli",15,12,0],["Yerköy",11,10,22],["Karaosman",19,16,2],["Caferli",19,15,0],["Şefaatli",12,12,0],["Sarıkent",22,19,27],["Kanlıca",19,16,15],["Yenifakılı",20,18,10],["Fehimli",11,9,0],["Paşalı",15,11,24],["Himmetdede",26,19,0],["Kalkancık",10,10,0],["Beydeğirmeni",11,11,0],["Boğazköprü",2,2,75],["Yeni Kayseri",1,1,0],["Gömeç",7,7,0],["Sarımsaklı",15,9,15],["Burhaniye",16,6,16],["Tuzhisar",9,9,0],["Palas",10,10,0],["Sarıoğlan",13,12,0],["Karaözü",15,15,0],["Yeniçubuk",28,14,0],["İhsanlı",12,10,31],["Topaç",8,7,0],["Şarkışla",21,14,0],["Gücük",10,7,0],["Hanlı",26,22,29],["Sarıdemir",33,23,0],["Bostankaya",9,7,35],["Ulaş",8,7,0],["Tecer",7,4,82],["Çetinkaya",13,12,9],["Çetinkaya (Malatya BM)",3,2,0],["Kalkım",8,5,0],["Demiriz Şehitleri",13,9,41],["Akgedik",21,14,33],["Ulugüney",18,16,0],["Hasançelebi",10,10,14],["Hekimhan",20,17,33],["Kesikköprü",16,14,0],["Sarsap",14,14,0],["Yazıhan",13,10,0],["Dilek",24,21,0],["Malatya (Çetinkaya BM)",24,11,0],["Malatya",2,1,52],["Battalgazi",18,16,2],["Fırat",16,14,5],["Kuşsarayı",30,17,10],["Pınarlı",24,12,52],["Baskil",35,15,2],["Şefkat",30,12,15],["Yolçatı",18,18,42],["Uluova",25,24,2],["Kürk",25,14,2],["Gezin",30,27,15],["Maden",27,26,2],["Sallar",26,22,2],["Ergani",12,11,2],["Geyik",25,24,2],["Km 476+000",12,11,1],["Leylek",17,14,2],["Diyarbakır",33,31,27],["Bozdemir",22,20,3],["Dilaver",48,25,3],["Mazıdağı",41,29,0]];
+
+function norm(s){
+  return (s || "").toLocaleLowerCase("tr-TR").replace(/\s+/g," ").trim();
+}
+function fmt(mins){
+  const h = Math.floor(mins/60), m = mins%60;
+  return h>0 ? `${h} saat ${m} dk` : `${m} dk`;
+}
+function parseTimeToMin(t){ // "HH:MM" -> minutes
+  const m = /^(\d{1,2}):(\d{2})$/.exec(t||"");
+  if(!m) return null;
+  const hh = Math.min(23, Math.max(0, parseInt(m[1],10)));
+  const mm = Math.min(59, Math.max(0, parseInt(m[2],10)));
+  return hh*60 + mm;
+}
+function addMinToClock(depMin, add){
+  let total = depMin + add;
+  const days = Math.floor(total / 1440);
+  total = ((total % 1440) + 1440) % 1440;
+  const hh = String(Math.floor(total/60)).padStart(2,'0');
+  const mm = String(total%60).padStart(2,'0');
+  return days>0 ? `${hh}:${mm} (+${days}g)` : `${hh}:${mm}`;
+}
+
+const dl = document.getElementById("stations");
+for(const r of DATA){
+  const o = document.createElement("option");
+  o.value = r[0];
+  dl.appendChild(o);
+}
+
+const startEl = document.getElementById("start");
+const endEl   = document.getElementById("end");
+const depEl   = document.getElementById("dep");
+
+const routeLine = document.getElementById("routeLine");
+const tabiSeyir = document.getElementById("tabiSeyir");
+const asgSeyir  = document.getElementById("asgSeyir");
+const araDurus  = document.getElementById("araDurus");
+const arrivals  = document.getElementById("arrivals");
+
+function calc(){
+  const sN = norm(startEl.value);
+  const eN = norm(endEl.value);
+
+  const idx = new Map(DATA.map((r,i)=>[norm(r[0]), i]));
+  if(!idx.has(sN) || !idx.has(eN)){
+    routeLine.textContent = "İstasyon bulunamadı. Listeden seç veya yazımı kontrol et.";
+    tabiSeyir.textContent = asgSeyir.textContent = araDurus.textContent = arrivals.textContent = "—";
+    return;
+  }
+
+  let s = idx.get(sN), e = idx.get(eN);
+  if(s === e){
+    routeLine.textContent = "Başlangıç ve bitiş aynı olamaz.";
+    return;
+  }
+  if(s > e){ [s,e]=[e,s]; }
+
+  let tabi=0, asg=0, dur=0;
+  for(let i=s+1;i<=e;i++){ tabi += DATA[i][1]; asg += DATA[i][2]; }
+  for(let i=s+1;i<e;i++){ dur  += DATA[i][3]; }
+
+  const depMin = parseTimeToMin(depEl.value);
+  const tabiTot = tabi + dur;
+  const asgTot  = asg  + dur;
+
+  routeLine.textContent = `${DATA[s][0]} → ${DATA[e][0]}`;
+  tabiSeyir.textContent = fmt(tabi);
+  asgSeyir.textContent  = fmt(asg);
+  araDurus.textContent  = fmt(dur);
+
+  if(depMin === null){
+    arrivals.textContent = `Toplam: ${fmt(tabiTot)} / ${fmt(asgTot)}`;
+  } else {
+    const a1 = addMinToClock(depMin, tabiTot);
+    const a2 = addMinToClock(depMin, asgTot);
+    arrivals.textContent = `${a1}  /  ${a2}`;
+  }
+}
+
+document.getElementById("btn").addEventListener("click", calc);
+document.getElementById("swap").addEventListener("click", ()=>{
+  const tmp = startEl.value; startEl.value = endEl.value; endEl.value = tmp;
+});
+</script>
+</body></html>
