@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Personel Bilgi Sorgulama</title>
+<style>
+  :root {
+    --bg: #0b1220;
+    --card: rgba(255,255,255,.08);
+    --stroke: rgba(255,255,255,.14);
+    --text: rgba(255,255,255,.92);
+    --muted: rgba(255,255,255,.70);
+    --accent: #6ee7ff;
+    --ok: #35d07f;
+    --warn: #ffcf5a;
+    --danger: #ff7a7a;
+    --shadow: 0 12px 40px rgba(0,0,0,.35);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(1200px 800px at 20% 10%, rgba(110,231,255,.16), transparent 60%),
+      radial-gradient(900px 700px at 80% 40%, rgba(167,139,250,.18), transparent 60%),
+      linear-gradient(180deg, var(--bg), #070a12);
+    color: var(--text);
+    padding: 18px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; }
+  .top {
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .title { display:flex; flex-direction:column; gap:4px; }
+  h1 { margin:0; font-size: 20px; letter-spacing:.2px; }
+  .sub { margin:0; color:var(--muted); font-size:13px; }
+  .pill {
+    border:1px solid var(--stroke);
+    background: rgba(255,255,255,.06);
+    padding: 8px 10px; border-radius: 999px;
+    font-size: 12px; color: var(--muted);
+    white-space: nowrap;
+  }
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .card-inner { padding: 14px; }
+
+  label {
+    display:block; font-weight: 800; font-size: 13px;
+    color: rgba(255,255,255,.86); margin: 12px 0 6px;
+  }
+
+  input {
+    width:100%;
+    padding: 14px 14px;
+    border-radius: 16px;
+    border: 1px solid var(--stroke);
+    background: rgba(0,0,0,.18);
+    color: var(--text);
+    font-size: 18px;   /* tablet için büyük */
+    outline: none;
+  }
+  input:focus {
+    border-color: rgba(110,231,255,.55);
+    box-shadow: 0 0 0 4px rgba(110,231,255,.12);
+  }
+
+  .search-wrap { position:relative; }
+
+  .suggest {
+    position:absolute;
+    top: calc(100% + 10px);
+    left:0; right:0;
+    background: rgba(10,14,24,.98);
+    border: 1px solid var(--stroke);
+    border-radius: 18px;
+    overflow:hidden;
+    box-shadow: 0 14px 50px rgba(0,0,0,.45);
+    display:none;
+    z-index: 50;
+  }
+  .suggest.open { display:block; }
+
+  .item {
+    padding: 16px 14px; /* dokunma alanı büyüdü */
+    display:flex; align-items:center; justify-content: space-between;
+    gap: 12px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    cursor:pointer;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .item:first-child { border-top:none; }
+  .item:active { background: rgba(110,231,255,.16); }
+
+  .name { font-weight: 900; font-size: 15px; letter-spacing:.2px; }
+  .meta { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+  .empty { padding: 14px; color: rgba(255,255,255,.65); font-size: 13px; }
+
+  .actions {
+    display:flex; gap: 10px; margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  button {
+    border: 1px solid var(--stroke);
+    background: rgba(255,255,255,.08);
+    color: var(--text);
+    padding: 12px 14px;
+    border-radius: 16px;
+    font-size: 15px;
+    cursor: pointer;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:active { transform: translateY(1px); }
+  .danger {
+    border-color: rgba(255,122,122,.55);
+    background: rgba(255,122,122,.12);
+  }
+  .primary {
+    border-color: rgba(110,231,255,.45);
+    background: rgba(110,231,255,.10);
+  }
+
+  .grid {
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  @media (min-width: 760px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .field {
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--stroke);
+    border-radius: 18px;
+    padding: 14px;
+  }
+  .field-top {
+    display:flex; align-items:center; justify-content: space-between; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .k { font-size: 12px; color: var(--muted); }
+  .v { font-size: 18px; font-weight: 900; letter-spacing:.2px; word-break: break-word; }
+
+  .copy-btn {
+    border: 1px solid rgba(110,231,255,.45);
+    background: rgba(110,231,255,.10);
+    padding: 10px 12px;
+    border-radius: 14px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .copy-btn:active { background: rgba(110,231,255,.18); }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    background: rgba(15,20,32,.92);
+    border: 1px solid rgba(255,255,255,.14);
+    color: rgba(255,255,255,.92);
+    padding: 10px 12px;
+    border-radius: 999px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    font-size: 13px;
+    display:none;
+    z-index: 100;
+    max-width: 92vw;
+  }
+  .toast.show { display:block; }
+  .toast b { color: var(--accent); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="title">
+        <h1>Personel Bilgi Sorgulama</h1>
+        <p class="sub">İsmi yaz → alttan dokunarak seç → <b>TCKN kopyala</b>.</p>
+      </div>
+      <div class="pill" id="sayac">Kayıt: 0</div>
+    </div>
+
+    <div class="card">
+      <div class="card-inner">
+        <label>İsim / Personel No / Sicil No ara</label>
+        <div class="search-wrap">
+          <input id="ara" placeholder="Örn: Ramazan / 1100... / 846..." autocomplete="off" inputmode="search" />
+          <div id="suggest" class="suggest" role="listbox" aria-label="Öneriler"></div>
+        </div>
+
+        <div class="actions">
+          <button id="ilkBtn" class="primary" type="button">İlk eşleşeni seç</button>
+          <button id="temizleBtn" class="danger" type="button">Temizle</button>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <div class="field-top">
+              <div class="k">Ad Soyad</div>
+            </div>
+            <div class="v" id="adsoyad">—</div>
+          </div>
+
+          <div class="field">
+            <div class="field-top">
+              <div class="k">TCKN</div>
+              <button class="copy-btn" id="copyTckn" type="button">Kopyala</button>
+            </div>
+            <div class="v" id="tckn">—</div>
+          </div>
+
+          <div class="field">
+            <div class="field-top">
+              <div class="k">Personel No</div>
+              <button class="copy-btn" id="copyPno" type="button">Kopyala</button>
+            </div>
+            <div class="v" id="pno">—</div>
+          </div>
+
+          <div class="field">
+            <div class="field-top">
+              <div class="k">Sicil No</div>
+              <button class="copy-btn" id="copySicil" type="button">Kopyala</button>
+            </div>
+            <div class="v" id="sicil">—</div>
+          </div>
+
+          <div class="field">
+            <div class="field-top">
+              <div class="k">Telefon</div>
+              <button class="copy-btn" id="copyTel" type="button">Kopyala</button>
+            </div>
+            <div class="v" id="tel">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+<script>
+(() => {
+  const DATA = [{"sira": 3, "ad_soyad": "Abbas YILDIRIM", "personel_no": "11000517", "sicil_no": "84684", "tckn": "16507915396", "tel": "5421037633"}, {"sira": 21, "ad_soyad": "Abdulkadir YALÇINKAYA", "personel_no": "11002119", "sicil_no": "84674", "tckn": "24052679342", "tel": "5073783411"}, {"sira": 1, "ad_soyad": "Alamettin KAVAK", "personel_no": "1001858", "sicil_no": "19206", "tckn": "25517643496", "tel": "5323204747"}, {"sira": 31, "ad_soyad": "Ali YÜKSEL", "personel_no": "1004614", "sicil_no": "35956", "tckn": "54823387954", "tel": "5362565191"}, {"sira": 14, "ad_soyad": "Ali ÇAVUŞOĞLU", "personel_no": "1002989", "sicil_no": "28903", "tckn": "10214124836", "tel": "5304303764"}, {"sira": 18, "ad_soyad": "Askeri KAYA", "personel_no": "11001452", "sicil_no": "86775", "tckn": "38803175892", "tel": "5356212896"}, {"sira": 19, "ad_soyad": "Cemal KAYHAN", "personel_no": "1003080", "sicil_no": "29065", "tckn": "33685346378", "tel": "5395458674"}, {"sira": 12, "ad_soyad": "Cihan ÖZDEMİR", "personel_no": "11001372", "sicil_no": "86778", "tckn": "28066523844", "tel": "5312393940"}, {"sira": 5, "ad_soyad": "Davut SEVER", "personel_no": "11000520", "sicil_no": "84683", "tckn": "41203091808", "tel": "5397144518"}, {"sira": 22, "ad_soyad": "Eray ERKMENSOY", "personel_no": "11002120", "sicil_no": "84679", "tckn": "34327334784", "tel": "5359869296"}, {"sira": 26, "ad_soyad": "Ercan OK", "personel_no": "1004026", "sicil_no": "33529", "tckn": "43195015008", "tel": "5326527132"}, {"sira": 11, "ad_soyad": "Erol GÜVEN", "personel_no": "11001369", "sicil_no": "86777", "tckn": "15757933358", "tel": "5358847944"}, {"sira": 24, "ad_soyad": "Gökhan KORKUSUZ", "personel_no": "11002369", "sicil_no": "88037", "tckn": "29908478254", "tel": "5383770904"}, {"sira": 15, "ad_soyad": "Günal YAŞAR", "personel_no": "1003016", "sicil_no": "28959", "tckn": "32944367772", "tel": "5065034480"}, {"sira": 30, "ad_soyad": "Hakan BİLEN", "personel_no": "1004578", "sicil_no": "35891", "tckn": "21053508992", "tel": "5065024870"}, {"sira": 16, "ad_soyad": "Hasan GÜL", "personel_no": "11001396", "sicil_no": "86780", "tckn": "19837795560", "tel": "5359308223"}, {"sira": 33, "ad_soyad": "İkram PINAR", "personel_no": "1004676", "sicil_no": "36062", "tckn": "18217847974", "tel": "5303285455"}, {"sira": 36, "ad_soyad": "Kadri OKTAY", "personel_no": "1005325", "sicil_no": "29244", "tckn": "37660225696", "tel": "5530577521"}, {"sira": 2, "ad_soyad": "Kamuran YAMAN", "personel_no": "11000506", "sicil_no": "84678", "tckn": "37091254180", "tel": "5416031572"}, {"sira": 23, "ad_soyad": "Mazlum ARAS", "personel_no": "11002121", "sicil_no": "84680", "tckn": "14605993186", "tel": "5315542221"}, {"sira": 21, "ad_soyad": "Mehmet DEMİR", "personel_no": "1003107", "sicil_no": "29129", "tckn": "17071897538", "tel": "5336520661"}, {"sira": 8, "ad_soyad": "Mehmet EKİN", "personel_no": "1002871", "sicil_no": "28676", "tckn": "43114035056", "tel": "5373127084"}, {"sira": 2, "ad_soyad": "Mehmet Engin MUNGAN", "personel_no": "1001937", "sicil_no": "19333", "tckn": "19217573948", "tel": "5302520252"}, {"sira": 7, "ad_soyad": "Mehmet Faruk YILMAZ", "personel_no": "11000525", "sicil_no": "84686", "tckn": "30653187384", "tel": "5364044414"}, {"sira": 17, "ad_soyad": "Mehmet OK", "personel_no": "11001397", "sicil_no": "86774", "tckn": "22645450514", "tel": "5071487364"}, {"sira": 23, "ad_soyad": "Mehmet Sadin DOĞAN", "personel_no": "1003167", "sicil_no": "29370", "tckn": "12095059764", "tel": "5304127632"}, {"sira": 19, "ad_soyad": "Mehmet Salih EREN", "personel_no": "11001470", "sicil_no": "86779", "tckn": "27286570546", "tel": "5319881860"}, {"sira": 27, "ad_soyad": "Mehmet SARİ", "personel_no": "1004397", "sicil_no": "35325", "tckn": "29035498156", "tel": "5065987551"}, {"sira": 22, "ad_soyad": "Mehmet ÇİÇEK", "personel_no": "1003138", "sicil_no": "29211", "tckn": "23548680770", "tel": "5057130421"}, {"sira": 13, "ad_soyad": "Mehmet Ümit YILDIRIM", "personel_no": "1002974", "sicil_no": "28885", "tckn": "34819318490", "tel": "5058691569"}, {"sira": 32, "ad_soyad": "Mesut DEMİRAL", "personel_no": "1004669", "sicil_no": "36052", "tckn": "42238051522", "tel": "5062641164"}, {"sira": 18, "ad_soyad": "Muhammed TÜRK", "personel_no": "1003064", "sicil_no": "29038", "tckn": "40612111770", "tel": "5058033140"}, {"sira": 6, "ad_soyad": "Murat ERBAŞ", "personel_no": "11000523", "sicil_no": "84687", "tckn": "34352345694", "tel": "5433369099"}, {"sira": 11, "ad_soyad": "Murat MÜLAYİM", "personel_no": "1002903", "sicil_no": "28749", "tckn": "11831396248", "tel": "5304127630"}, {"sira": 28, "ad_soyad": "Mustafa GÜLER", "personel_no": "11005187", "sicil_no": "90209", "tckn": "22285462472", "tel": "5340566476"}, {"sira": 9, "ad_soyad": "Mustafa KAYA", "personel_no": "1002896", "sicil_no": "28741", "tckn": "33790339524", "tel": "5325168884"}, {"sira": 15, "ad_soyad": "Nebi TOSUN", "personel_no": "11001381", "sicil_no": "86781", "tckn": "13742004854", "tel": "5054785619"}, {"sira": 37, "ad_soyad": "Necmettin YAMAÇ", "personel_no": "1005596", "sicil_no": "33339", "tckn": "42787028884", "tel": "5334122958"}, {"sira": 25, "ad_soyad": "Nedim BALİ", "personel_no": "1003572", "sicil_no": "31395", "tckn": "28840503864", "tel": "5057456820"}, {"sira": 28, "ad_soyad": "Olcay AĞALDAY", "personel_no": "1004507", "sicil_no": "35767", "tckn": "24434400236", "tel": "5524070049"}, {"sira": 1, "ad_soyad": "Ramazan GÜLOĞLU", "personel_no": "11000486", "sicil_no": "84676", "tckn": "30229448338", "tel": "5336555074"}, {"sira": 13, "ad_soyad": "Ramazan KURTULDU", "personel_no": "11001376", "sicil_no": "86776", "tckn": "18983592016", "tel": "5071487311"}, {"sira": 10, "ad_soyad": "Ramazan UZUNKAYA", "personel_no": "1002900", "sicil_no": "28745", "tckn": "23971666112", "tel": "5052744694"}, {"sira": 3, "ad_soyad": "Ramazan YAŞA", "personel_no": "1002147", "sicil_no": "20195", "tckn": "33904335886", "tel": "5354992002"}, {"sira": 14, "ad_soyad": "Recep BARAN", "personel_no": "11001377", "sicil_no": "86782", "tckn": "34132343452", "tel": "5078535182"}, {"sira": 34, "ad_soyad": "Rıdvan EROL", "personel_no": "1004778", "sicil_no": "36243", "tckn": "67312253234", "tel": "5416254219"}, {"sira": 16, "ad_soyad": "Salih KAYMAK", "personel_no": "1003059", "sicil_no": "29033", "tckn": "41809069232", "tel": "5052772448"}, {"sira": 35, "ad_soyad": "Savaş ŞAHİN", "personel_no": "1004808", "sicil_no": "36294", "tckn": "31783406406", "tel": "5062842021"}, {"sira": 12, "ad_soyad": "Selahattin KOÇYİĞİT", "personel_no": "1002943", "sicil_no": "28829", "tckn": "15136956466", "tel": "5325995239"}, {"sira": 9, "ad_soyad": "Selçuk GÜNEŞ", "personel_no": "11000535", "sicil_no": "84681", "tckn": "15892950302", "tel": "5055848575"}, {"sira": 26, "ad_soyad": "Servet BOZAN", "personel_no": "11002443", "sicil_no": "88038", "tckn": "29092499790", "tel": "5539679523"}, {"sira": 6, "ad_soyad": "Vedat DURSUN", "personel_no": "1002649", "sicil_no": "27047", "tckn": "26632577918", "tel": "5065432149"}, {"sira": 8, "ad_soyad": "Veysel BARAN", "personel_no": "11000531", "sicil_no": "84688", "tckn": "34138343234", "tel": "5446716320"}, {"sira": 4, "ad_soyad": "Veysel KARAMAN", "personel_no": "1002148", "sicil_no": "20196", "tckn": "31891402468", "tel": "5349602821"}, {"sira": 20, "ad_soyad": "Yunus NAS", "personel_no": "11001575", "sicil_no": "86783", "tckn": "38752885804", "tel": "5319849729"}, {"sira": 17, "ad_soyad": "Yılmaz ERİŞ", "personel_no": "1003060", "sicil_no": "29034", "tckn": "21658756606", "tel": "5054369078"}, {"sira": 5, "ad_soyad": "Yılmaz GÖKGÖZ", "personel_no": "1002625", "sicil_no": "26996", "tckn": "24373393408", "tel": "5305433439"}, {"sira": 25, "ad_soyad": "Yılmaz KAYA", "personel_no": "11002383", "sicil_no": "88039", "tckn": "22228724728", "tel": "5397153521"}, {"sira": 24, "ad_soyad": "Zeki SÜNGÜ", "personel_no": "1003170", "sicil_no": "29374", "tckn": "13352020534", "tel": "5536787886"}, {"sira": 20, "ad_soyad": "Çetin KARAKOÇ", "personel_no": "1003081", "sicil_no": "29066", "tckn": "16132928068", "tel": "5079400203"}, {"sira": 7, "ad_soyad": "Ömer DEMİRTAŞ", "personel_no": "1002832", "sicil_no": "28535", "tckn": "32999390756", "tel": "5325008558"}, {"sira": 27, "ad_soyad": "Ömer KARANFİL", "personel_no": "11005175", "sicil_no": "90211", "tckn": "74668005196", "tel": "5071343507"}, {"sira": 4, "ad_soyad": "Şahidin YILMAZ", "personel_no": "11000518", "sicil_no": "84682", "tckn": "27787536836", "tel": "5363098790"}, {"sira": 10, "ad_soyad": "Şahin GÜNEŞ", "personel_no": "11000538", "sicil_no": "84685", "tckn": "17872885208", "tel": "5355223230"}, {"sira": 29, "ad_soyad": "Şeyhmus YAMAN", "personel_no": "1004517", "sicil_no": "35795", "tckn": "36944013448", "tel": "5306009147"}];
+
+  const elAra = document.getElementById("ara");
+  const elSuggest = document.getElementById("suggest");
+  const elSayac = document.getElementById("sayac");
+
+  const outAd = document.getElementById("adsoyad");
+  const outPno = document.getElementById("pno");
+  const outSicil = document.getElementById("sicil");
+  const outTckn = document.getElementById("tckn");
+  const outTel = document.getElementById("tel");
+
+  const btnTemizle = document.getElementById("temizleBtn");
+  const btnIlk = document.getElementById("ilkBtn");
+
+  const btnCopyTckn = document.getElementById("copyTckn");
+  const btnCopyPno = document.getElementById("copyPno");
+  const btnCopySicil = document.getElementById("copySicil");
+  const btnCopyTel = document.getElementById("copyTel");
+
+  const toast = document.getElementById("toast");
+
+  elSayac.textContent = "Kayıt: " + DATA.length;
+
+  function showToast(label, value) {
+    if (!value || value === "—") {
+      toast.textContent = "Önce personel seç.";
+      toast.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(()=>toast.classList.remove("show"), 1200);
+      return;
+    }
+    toast.innerHTML = "<b>" + escapeHtml(label) + "</b> kopyalandı: " + escapeHtml(value);
+    toast.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=>toast.classList.remove("show"), 1400);
+  }
+
+  function setDash() {
+    outAd.textContent = "—";
+    outPno.textContent = "—";
+    outSicil.textContent = "—";
+    outTckn.textContent = "—";
+    outTel.textContent = "—";
+  }
+
+  function doldur(p) {
+    outAd.textContent = p.ad_soyad || "—";
+    outPno.textContent = p.personel_no || "—";
+    outSicil.textContent = p.sicil_no || "—";
+    outTckn.textContent = p.tckn || "—";
+    outTel.textContent = p.tel || "—";
+  }
+
+  function norm(s) {
+    return (s || "").toLocaleLowerCase("tr");
+  }
+
+  function matchList(q) {
+    q = norm(q).trim();
+    if (!q) return [];
+    return DATA.filter(p => {
+      const hay = norm(p.ad_soyad) + " " + String(p.personel_no||"") + " " + String(p.sicil_no||"");
+      return hay.includes(q);
+    }).slice(0, 14);
+  }
+
+  function renderSuggest(list) {
+    elSuggest.innerHTML = "";
+    if (list.length === 0) {
+      elSuggest.innerHTML = "<div class='empty'>Eşleşme yok</div>";
+      elSuggest.classList.add("open");
+      return;
+    }
+    list.forEach((p) => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.setAttribute("role","option");
+      div.innerHTML = `
+        <div>
+          <div class="name">${escapeHtml(p.ad_soyad)}</div>
+          <div class="meta">Personel: ${escapeHtml(String(p.personel_no||""))} · Sicil: ${escapeHtml(String(p.sicil_no||""))}</div>
+        </div>
+        <div class="meta">Dokun</div>
+      `;
+      div.addEventListener("click", () => {
+        elAra.value = p.ad_soyad;
+        doldur(p);
+        closeSuggest();
+      });
+      elSuggest.appendChild(div);
+    });
+    elSuggest.classList.add("open");
+  }
+
+  function closeSuggest() {
+    elSuggest.classList.remove("open");
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  async function copyText(label, value) {
+    if (!value || value === "—") {
+      showToast(label, "");
+      return;
+    }
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        // iOS/HTTP fallback
+        const ta = document.createElement("textarea");
+        ta.value = value;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.top = "-1000px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      showToast(label, value);
+    } catch (e) {
+      // Son çare: kullanıcıya seçtir
+      showToast(label, value);
+    }
+  }
+
+  btnCopyTckn.addEventListener("click", ()=> copyText("TCKN", outTckn.textContent.trim()));
+  btnCopyPno.addEventListener("click", ()=> copyText("Personel No", outPno.textContent.trim()));
+  btnCopySicil.addEventListener("click", ()=> copyText("Sicil No", outSicil.textContent.trim()));
+  btnCopyTel.addEventListener("click", ()=> copyText("Telefon", outTel.textContent.trim()));
+
+  // TCKN'ye dokununca da kopyalasın (tablet için pratik)
+  outTckn.addEventListener("click", ()=> copyText("TCKN", outTckn.textContent.trim()));
+  outTckn.style.cursor = "pointer";
+
+  let last = [];
+  elAra.addEventListener("input", () => {
+    last = matchList(elAra.value);
+    if (!elAra.value.trim()) {
+      closeSuggest();
+      setDash();
+      return;
+    }
+    renderSuggest(last);
+  });
+
+  elAra.addEventListener("focus", () => {
+    if (elAra.value.trim()) {
+      last = matchList(elAra.value);
+      renderSuggest(last);
+    }
+  });
+
+  elAra.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (last && last.length) {
+        elAra.value = last[0].ad_soyad;
+        doldur(last[0]);
+        closeSuggest();
+      }
+    }
+    if (e.key === "Escape") closeSuggest();
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".search-wrap")) closeSuggest();
+  });
+
+  btnTemizle.addEventListener("click", () => {
+    elAra.value = "";
+    last = [];
+    closeSuggest();
+    setDash();
+    elAra.focus();
+  });
+
+  btnIlk.addEventListener("click", () => {
+    last = matchList(elAra.value);
+    if (last.length) {
+      elAra.value = last[0].ad_soyad;
+      doldur(last[0]);
+      closeSuggest();
+    }
+  });
+
+  setDash();
+})();
+</script>
+</body>
+</html>
